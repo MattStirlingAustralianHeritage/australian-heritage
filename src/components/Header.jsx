@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { label: 'Short Reads', to: '/category/shortreads' },
   { label: 'Documentaries', to: '/documentaries' },
   { label: 'About', to: '/about' },
+  { label: 'Map', to: '/map' },
 ]
 
 export default function Header() {
