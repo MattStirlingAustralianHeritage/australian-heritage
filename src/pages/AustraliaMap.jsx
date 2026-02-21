@@ -83,12 +83,12 @@ export default function AustraliaMap() {
     <div style={{ fontFamily: "Georgia, serif", height: "100vh", display: "flex", flexDirection: "column", background: "#f5f0e8", color: "#2a1f0f" }}>
       <style>{`.heritage-tooltip { background: #2a1f0f; border: none; color: #f5f0e8; font-family: Georgia, serif; font-size: 12px; padding: 4px 10px; border-radius: 2px; } .heritage-tooltip::before { border-top-color: #2a1f0f !important; } .leaflet-control-zoom { border: none !important; } .leaflet-control-zoom a { background: #2a1f0f !important; color: #f5f0e8 !important; border: none !important; } ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #c4a882; } .tab-btn { background: none; border: none; cursor: pointer; font-family: Georgia, serif; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; color: #8a7055; transition: all 0.2s; border-bottom: 2px solid transparent; } .tab-btn.active { color: #2a1f0f; border-bottom-color: #8B4513; } .town-item { padding: 10px 12px; cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; display: flex; align-items: center; gap: 10px; } .town-item:hover { background: #ede5d5; border-left-color: #c4a882; } .town-item.selected { background: #e8dcc8; border-left-color: #8B4513; } @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } } .panel-animate { animation: slideIn 0.3s ease; } @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } .fade-up { animation: fadeUp 0.4s ease; }`}</style>
       <div style={{ background: "#2a1f0f", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 16 }}>
-          <span style={{ color: "#f5f0e8", fontSize: 20, letterSpacing: "0.12em", textTransform: "uppercase" }}>Australian Heritage</span>
-          <span style={{ color: "#c4a882", fontSize: 13, letterSpacing: "0.06em" }}>Discovery Map</span>
-        </div>
-        <div style={{ color: "#8a7055", fontSize: 12, letterSpacing: "0.08em" }}>{TOWNS.length} REMARKABLE PLACES</div>
-      </div>
+  <div style={{ display: "flex", alignItems: "baseline", gap: 16 }}>
+    <a href="https://www.australianheritage.au" style={{ color: "#f5f0e8", fontSize: 20, letterSpacing: "0.12em", textTransform: "uppercase", textDecoration: "none" }}>Australian Heritage</a>
+    <span style={{ color: "#c4a882", fontSize: 13, letterSpacing: "0.06em" }}>Discovery Map</span>
+  </div>
+  <div style={{ color: "#8a7055", fontSize: 12, letterSpacing: "0.08em" }}>{TOWNS.length} REMARKABLE PLACES</div>
+
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <div style={{ width: 280, background: "#faf6ef", borderRight: "1px solid #e0d5c0", display: "flex", flexDirection: "column", flexShrink: 0 }}>
           <div style={{ padding: "16px 14px 12px", borderBottom: "1px solid #e0d5c0" }}>
