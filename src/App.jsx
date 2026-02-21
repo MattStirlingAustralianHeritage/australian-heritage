@@ -7,13 +7,14 @@ import CategoryPage from './pages/CategoryPage'
 import DocumentariesPage from './pages/DocumentariesPage'
 import AboutPage from './pages/AboutPage'
 import AdminApp from './pages/AdminApp'
+import AustraliaMap from './pages/AustraliaMap'
 
 export default function App() {
   return (
     <Routes>
       {/* Admin routes - no header/footer */}
       <Route path="/admin/*" element={<AdminApp />} />
-
+<Route path="/map" element={<AustraliaMap />} />
       {/* Public routes */}
       <Route path="*" element={
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
