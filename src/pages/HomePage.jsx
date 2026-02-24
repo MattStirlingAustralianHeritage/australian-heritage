@@ -4,6 +4,92 @@ import { supabase } from '../lib/supabase'
 import CategoryBadge from '../components/CategoryBadge'
 import Loading from '../components/Loading'
 
+// ─── SVG Map Teaser Component ──────────────────────────────────────
+function MapTeaser() {
+  const [activePin, setActivePin] = useState(0)
+  
+  const featuredLocations = [
+    { name: 'Port Arthur', state: 'TAS', x: 485, y: 395, desc: 'Australia\'s most significant convict site' },
+    { name: 'Ballarat', state: 'VIC', x: 455, y: 340, desc: 'Heart of the Victorian gold rush' },
+    { name: 'Fremantle', state: 'WA', x: 115, y: 310, desc: 'Western Australia\'s historic port city' },
+    { name: 'Cooktown', state: 'QLD', x: 470, y: 135, desc: 'Where Cook first set foot on Australian soil' },
+    { name: 'Hahndorf', state: 'SA', x: 380, y: 310, desc: 'Australia\'s oldest surviving German settlement' },
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActivePin(prev => (prev + 1) % featuredLocations.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <section className="map-teaser">
+      <div className="map-teaser-inner">
+        <div className="map-teaser-content">
+          <span className="section-label">Interactive Heritage Map</span>
+          <h2 className="map-teaser-heading">Explore Australia's Heritage</h2>
+          <p className="map-teaser-body">
+            Discover over 100 historic towns and places of outstanding natural beauty across Australia. 
+            Follow curated trails through gold rush country, convict heritage sites, and ancient landscapes.
+          </p>
+          <div className="map-teaser-location-preview">
+            <div className="location-indicator" />
+            <div>
+              <span className="preview-name">{featuredLocations[activePin].name}</span>
+              <span className="preview-state">{featuredLocations[activePin].state}</span>
+            </div>
+            <span className="preview-desc">{featuredLocations[activePin].desc}</span>
+          </div>
+          <Link to="/map" className="map-cta-button">
+            Explore the Map
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ marginLeft: 8 }}>
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </Link>
+        </div>
+        <div className="map-teaser-visual">
+          <svg viewBox="0 0 600 450" className="australia-outline">
+            {/* Simplified Australia outline */}
+            <path 
+              d="M130,280 C125,265 120,250 118,235 C115,215 125,200 130,185 C138,165 150,155 165,150 C175,142 190,138 200,130 C215,120 225,108 240,100 C255,92 270,88 285,82 C300,78 320,75 340,72 C360,70 375,68 390,72 C410,78 425,85 440,95 C452,102 460,112 468,125 C475,138 480,150 488,162 C495,175 505,185 510,198 C515,212 518,225 520,240 C522,255 520,268 515,280 C510,295 502,308 495,318 C488,328 478,335 470,342 C458,352 445,358 432,365 C418,372 405,378 392,382 C378,388 365,392 350,395 C335,398 320,400 305,398 C290,396 275,390 262,385 C250,380 238,372 228,365 C215,355 205,342 195,332 C185,320 175,310 165,300 C155,292 142,285 130,280Z"
+              className="aus-landmass"
+            />
+            {/* Tasmania */}
+            <path 
+              d="M470,382 C478,378 488,380 492,388 C495,395 492,405 485,408 C478,412 468,408 465,400 C462,392 465,385 470,382Z"
+              className="aus-landmass"
+            />
+            
+            {/* Location pins */}
+            {featuredLocations.map((loc, i) => (
+              <g key={loc.name} className={`map-pin ${i === activePin ? 'active' : ''}`}>
+                <circle cx={loc.x} cy={loc.y} r={i === activePin ? 8 : 5} className="pin-outer" />
+                <circle cx={loc.x} cy={loc.y} r={3} className="pin-inner" />
+                {i === activePin && (
+                  <circle cx={loc.x} cy={loc.y} r={16} className="pin-pulse" />
+                )}
+              </g>
+            ))}
+            
+            {/* Decorative compass */}
+            <g transform="translate(540, 60)" className="compass">
+              <circle cx="0" cy="0" r="18" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+              <line x1="0" y1="-22" x2="0" y2="-14" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+              <line x1="0" y1="14" x2="0" y2="22" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+              <line x1="-22" y1="0" x2="-14" y2="0" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+              <line x1="14" y1="0" x2="22" y2="0" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+              <text x="0" y="-26" textAnchor="middle" className="compass-label">N</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+
+// ─── Homepage ──────────────────────────────────────────────────────
 export default function HomePage() {
   const [articles, setArticles] = useState([])
   const [categories, setCategories] = useState([])
@@ -36,383 +122,183 @@ export default function HomePage() {
 
   const featured = articles.find(a => a.featured) || articles[0]
   const rest = articles.filter(a => a.id !== featured?.id)
-  const leftCol = rest.slice(0, 2)
-  const rightCol = rest.slice(2, 6)
-  const remaining = rest.slice(6)
-  const filtered = activeCategory === 'all'
-    ? remaining
-    : remaining.filter(a => a.category?.slug === activeCategory)
+  
+  const filteredRest = activeCategory === 'all'
+    ? rest
+    : rest.filter(a => a.category?.slug === activeCategory)
+
+  const leftCol = filteredRest.slice(0, 2)
+  const rightCol = filteredRest.slice(2, 6)
+  const gridArticles = filteredRest.slice(6)
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return ''
+    return new Date(dateStr).toLocaleDateString('en-AU', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    })
+  }
 
   return (
-    <div className="page-enter">
-      <style>{`
-        .hero-grid {
-          display: grid;
-          grid-template-columns: 280px 1fr 300px;
-          gap: 0;
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 32px 32px 48px;
-          min-height: 520px;
-        }
-        .hero-left {
-          border-right: 1px solid rgba(139, 115, 85, 0.12);
-          padding-right: 28px;
-          display: flex;
-          flex-direction: column;
-          gap: 24px;
-        }
-        .hero-centre {
-          padding: 0 32px;
-          display: flex;
-          flex-direction: column;
-        }
-        .hero-right {
-          border-left: 1px solid rgba(139, 115, 85, 0.12);
-          padding-left: 28px;
-          display: flex;
-          flex-direction: column;
-          gap: 0;
-        }
-        .below-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 32px;
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 32px 80px;
-        }
-        .filter-row {
-          display: flex;
-          gap: 8px;
-          flex-wrap: wrap;
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 32px 32px;
-        }
-
-        @media (max-width: 1024px) {
-          .hero-grid {
-            grid-template-columns: 1fr 1fr;
-            min-height: auto;
-          }
-          .hero-left { display: none; }
-          .hero-right {
-            border-left: none;
-            padding-left: 0;
-            border-top: 1px solid rgba(139, 115, 85, 0.12);
-            padding-top: 24px;
-            margin-top: 24px;
-            grid-column: 1 / -1;
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 16px;
-          }
-          .hero-right > * { flex: 1; min-width: 200px; }
-          .below-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-          }
-        }
-
-        @media (max-width: 680px) {
-          .hero-grid {
-            grid-template-columns: 1fr;
-            padding: 20px 16px 32px;
-          }
-          .hero-centre { padding: 0; }
-          .hero-right > * { min-width: 100%; }
-          .below-grid {
-            grid-template-columns: 1fr;
-            padding: 0 16px 60px;
-          }
-          .filter-row {
-            padding: 0 16px 24px;
-          }
-          .section-divider {
-            padding: 0 16px;
-          }
-        }
-      `}</style>
-
-      {/* Tagline */}
-      <section style={{
-        textAlign: 'center',
-        padding: '36px 20px 32px',
-        borderBottom: '1px solid var(--color-border)',
-      }}>
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 16,
-          fontStyle: 'italic',
-          color: 'var(--color-text-muted)',
-          margin: 0,
-          lineHeight: 1.6,
-          maxWidth: 580,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-        }}>
-          Deep, rigorously researched storytelling about the people, places, and moments that shaped Australia.
-        </p>
+    <div className="homepage">
+      {/* ─── Hero ─── */}
+      <section className="hero">
+        <div className="hero-inner">
+          <div className="hero-tagline-group">
+            <div className="hero-rule" />
+            <h1 className="hero-tagline">
+              Understanding Australia<br />
+              through the stories<br />
+              that shaped it
+            </h1>
+            <p className="hero-subtitle">
+              Long-form journalism exploring the social, political, and cultural 
+              history of a nation still coming to terms with its past.
+            </p>
+          </div>
+        </div>
+        <div className="hero-texture" />
       </section>
 
-      {/* Three-column hero grid */}
-      <div className="hero-grid">
-        {/* Left column — 2 smaller stories */}
-        <div className="hero-left">
-          {leftCol.map(article => (
-            <LeftColCard key={article.id} article={article} />
-          ))}
-        </div>
-
-        {/* Centre — featured story */}
-        <div className="hero-centre">
-          {featured && <CentreCard article={featured} />}
-        </div>
-
-        {/* Right column — compact list */}
-        <div className="hero-right">
-          {rightCol.map((article, i) => (
-            <RightColCard key={article.id} article={article} isLast={i === rightCol.length - 1} />
-          ))}
-        </div>
-      </div>
-
-      {/* Divider */}
-      <div className="section-divider" style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 20,
-        maxWidth: 1200,
-        margin: '0 auto',
-        padding: '0 32px 24px',
-      }}>
-        <span style={{
-          fontFamily: 'var(--font-sans)',
-          fontSize: 11,
-          fontWeight: 600,
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          color: 'var(--color-text-muted)',
-          whiteSpace: 'nowrap',
-        }}>More Stories</span>
-        <div style={{ flex: 1, height: 1, background: 'rgba(139, 115, 85, 0.15)' }} />
-      </div>
-
-      {/* Category filter */}
-      <div className="filter-row">
-        <FilterButton active={activeCategory === 'all'} onClick={() => setActiveCategory('all')}>All</FilterButton>
-        {categories.map(cat => (
-          <FilterButton key={cat.id} active={activeCategory === cat.slug} onClick={() => setActiveCategory(cat.slug)}>
-            {cat.name}
-          </FilterButton>
-        ))}
-      </div>
-
-      {/* 4-column grid */}
-      <div className="below-grid">
-        {filtered.map(article => (
-          <GridCard key={article.id} article={article} />
-        ))}
-      </div>
-
-      {filtered.length === 0 && remaining.length === 0 && (
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: 16, color: 'var(--color-text-muted)',
-          textAlign: 'center', padding: '40px 0 80px', fontStyle: 'italic',
-        }}>
-          No more stories yet.
-        </p>
+      {/* ─── Featured Article ─── */}
+      {featured && (
+        <section className="featured-section">
+          <div className="container">
+            <Link to={`/article/${featured.slug}`} className="featured-card">
+              {featured.hero_image_url && (
+                <div className="featured-image-wrap">
+                  <img 
+                    src={featured.hero_image_url} 
+                    alt={featured.title}
+                    className="featured-image"
+                  />
+                </div>
+              )}
+              <div className="featured-content">
+                {featured.category && (
+                  <span className="featured-category">{featured.category.name}</span>
+                )}
+                <h2 className="featured-title">{featured.title}</h2>
+                {featured.excerpt && (
+                  <p className="featured-excerpt">{featured.excerpt}</p>
+                )}
+                <div className="featured-meta">
+                  {featured.author?.name && <span>{featured.author.name}</span>}
+                  {featured.published_at && (
+                    <>
+                      <span className="meta-dot">·</span>
+                      <span>{formatDate(featured.published_at)}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            </Link>
+          </div>
+        </section>
       )}
+
+      {/* ─── Category Filter ─── */}
+      <section className="articles-section">
+        <div className="container">
+          <div className="category-filter">
+            <button
+              className={`cat-btn ${activeCategory === 'all' ? 'active' : ''}`}
+              onClick={() => setActiveCategory('all')}
+            >
+              All
+            </button>
+            {categories.map(cat => (
+              <button
+                key={cat.id}
+                className={`cat-btn ${activeCategory === cat.slug ? 'active' : ''}`}
+                onClick={() => setActiveCategory(cat.slug)}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+
+          {/* ─── Three-Column Layout ─── */}
+          <div className="articles-grid-layout">
+            {/* Left Column */}
+            <div className="col-left">
+              {leftCol.map(article => (
+                <Link to={`/article/${article.slug}`} key={article.id} className="article-card">
+                  {article.hero_image_url && (
+                    <div className="card-image-wrap">
+                      <img src={article.hero_image_url} alt={article.title} className="card-image" />
+                    </div>
+                  )}
+                  <div className="card-body">
+                    {article.category && (
+                      <span className="card-category">{article.category.name}</span>
+                    )}
+                    <h3 className="card-title">{article.title}</h3>
+                    {article.excerpt && (
+                      <p className="card-excerpt">{article.excerpt}</p>
+                    )}
+                    <div className="card-meta">
+                      {article.author?.name && <span>{article.author.name}</span>}
+                      {article.published_at && (
+                        <>
+                          <span className="meta-dot">·</span>
+                          <span>{formatDate(article.published_at)}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Right Column — Compact List */}
+            <div className="col-right">
+              <h4 className="col-right-heading">Recent</h4>
+              {rightCol.map((article, i) => (
+                <Link to={`/article/${article.slug}`} key={article.id} className="compact-item">
+                  <span className="compact-number">{String(i + 1).padStart(2, '0')}</span>
+                  <div className="compact-body">
+                    {article.category && (
+                      <span className="compact-category">{article.category.name}</span>
+                    )}
+                    <h4 className="compact-title">{article.title}</h4>
+                    <span className="compact-meta">{formatDate(article.published_at)}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* ─── More Articles Grid ─── */}
+          {gridArticles.length > 0 && (
+            <>
+              <div className="section-divider" />
+              <div className="more-grid">
+                {gridArticles.map(article => (
+                  <Link to={`/article/${article.slug}`} key={article.id} className="grid-card">
+                    {article.hero_image_url && (
+                      <div className="grid-image-wrap">
+                        <img src={article.hero_image_url} alt={article.title} className="grid-image" />
+                      </div>
+                    )}
+                    <div className="grid-body">
+                      {article.category && (
+                        <span className="card-category">{article.category.name}</span>
+                      )}
+                      <h3 className="grid-title">{article.title}</h3>
+                      <div className="card-meta">
+                        {article.author?.name && <span>{article.author.name}</span>}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* ─── Map Teaser ─── */}
+      <MapTeaser />
     </div>
   )
-}
-
-/* ── Centre featured card ── */
-function CentreCard({ article }) {
-  return (
-    <Link to={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', flex: 1 }}>
-      {article.hero_image_url ? (
-        <div style={{
-          width: '100%',
-          flex: 1,
-          minHeight: 280,
-          borderRadius: 3,
-          overflow: 'hidden',
-          marginBottom: 20,
-          position: 'relative',
-        }}>
-          <img src={article.hero_image_url} alt={article.title} style={{
-            width: '100%', height: '100%', objectFit: 'cover', display: 'block', position: 'absolute', top: 0, left: 0,
-          }} />
-        </div>
-      ) : (
-        <div style={{
-          width: '100%', flex: 1, minHeight: 280, borderRadius: 3, marginBottom: 20,
-          background: 'linear-gradient(135deg, #e8e0d6, #d4cac0)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: 'var(--font-display)', fontSize: 48, color: 'rgba(44, 24, 16, 0.08)',
-        }}>AH</div>
-      )}
-      {article.category && (
-        <div style={{ marginBottom: 10 }}>
-          <CategoryBadge name={article.category.name} slug={article.category.slug} />
-        </div>
-      )}
-      <h2 style={{
-        fontFamily: 'var(--font-display)', fontSize: 30, fontWeight: 700,
-        lineHeight: 1.2, color: 'var(--color-text)', margin: '0 0 10px 0',
-        letterSpacing: '-0.01em',
-      }}>
-        {article.title}
-      </h2>
-      <p style={{
-        fontFamily: 'var(--font-body)', fontSize: 15, lineHeight: 1.65,
-        color: 'var(--color-text-secondary)', margin: '0 0 12px 0',
-      }}>
-        {article.excerpt?.slice(0, 180)}{article.excerpt?.length > 180 ? '...' : ''}
-      </p>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 'auto' }}>
-        <span style={{ fontFamily: 'var(--font-sans)', fontSize: 12, fontWeight: 600, color: 'var(--color-text)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          {article.author?.name || 'Matt Stirling'}
-        </span>
-      </div>
-    </Link>
-  )
-}
-
-/* ── Left column card (image + title) ── */
-function LeftColCard({ article }) {
-  return (
-    <Link to={`/article/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}>
-      {article.hero_image_url && (
-        <div style={{
-          width: '100%', aspectRatio: '4/3', borderRadius: 3, overflow: 'hidden', marginBottom: 12,
-        }}>
-          <img src={article.hero_image_url} alt={article.title} style={{
-            width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-          }} />
-        </div>
-      )}
-      {article.category && (
-        <div style={{ marginBottom: 6 }}>
-          <span style={{
-            fontFamily: 'var(--font-sans)', fontSize: 10, fontWeight: 600,
-            letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-muted)',
-          }}>
-            {article.category.name}
-          </span>
-        </div>
-      )}
-      <h3 style={{
-        fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
-        lineHeight: 1.3, color: 'var(--color-text)', margin: '0 0 6px 0',
-      }}>
-        {article.title}
-      </h3>
-      <span style={{
-        fontFamily: 'var(--font-sans)', fontSize: 11, fontWeight: 600,
-        color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em',
-      }}>
-        {article.author?.name || 'Matt Stirling'}
-      </span>
-    </Link>
-  )
-}
-
-/* ── Right column compact card (small thumbnail + title) ── */
-function RightColCard({ article, isLast }) {
-  return (
-    <Link to={`/article/${article.slug}`} style={{
-      textDecoration: 'none', display: 'flex', gap: 14, alignItems: 'flex-start',
-      padding: '16px 0',
-      borderBottom: isLast ? 'none' : '1px solid rgba(139, 115, 85, 0.08)',
-    }}>
-      <div style={{ flex: 1 }}>
-        <h4 style={{
-          fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700,
-          lineHeight: 1.35, color: 'var(--color-text)', margin: '0 0 6px 0',
-        }}>
-          {article.title}
-        </h4>
-        <span style={{
-          fontFamily: 'var(--font-sans)', fontSize: 11, fontWeight: 600,
-          color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em',
-        }}>
-          {article.author?.name || 'Matt Stirling'}
-        </span>
-      </div>
-      {article.hero_image_url && (
-        <div style={{
-          width: 72, height: 72, borderRadius: 3, overflow: 'hidden', flexShrink: 0,
-        }}>
-          <img src={article.hero_image_url} alt="" style={{
-            width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-          }} />
-        </div>
-      )}
-    </Link>
-  )
-}
-
-/* ── Grid card for "More Stories" section ── */
-function GridCard({ article }) {
-  return (
-    <Link to={`/article/${article.slug}`} style={{ textDecoration: 'none' }}>
-      {article.hero_image_url && (
-        <div style={{
-          width: '100%', aspectRatio: '16/10', borderRadius: 3,
-          overflow: 'hidden', marginBottom: 14,
-        }}>
-          <img src={article.hero_image_url} alt={article.title} style={{
-            width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-          }} />
-        </div>
-      )}
-      {article.category && (
-        <div style={{ marginBottom: 8 }}>
-          <CategoryBadge name={article.category.name} slug={article.category.slug} />
-        </div>
-      )}
-      <h3 style={{
-        fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700,
-        lineHeight: 1.3, color: 'var(--color-text)', margin: '0 0 8px 0',
-      }}>
-        {article.title}
-      </h3>
-      <p style={{
-        fontFamily: 'var(--font-body)', fontSize: 14, lineHeight: 1.6,
-        color: 'var(--color-text-secondary)', margin: '0 0 8px 0',
-      }}>
-        {article.excerpt?.slice(0, 100)}{article.excerpt?.length > 100 ? '...' : ''}
-      </p>
-      <span style={{
-        fontFamily: 'var(--font-sans)', fontSize: 11, color: 'var(--color-text-faint)',
-      }}>
-        {formatDate(article.published_at)}
-      </span>
-    </Link>
-  )
-}
-
-function FilterButton({ active, onClick, children }) {
-  return (
-    <button onClick={onClick} style={{
-      fontFamily: 'var(--font-sans)', fontSize: 12,
-      fontWeight: active ? 600 : 500, padding: '7px 16px',
-      border: '1px solid',
-      borderColor: active ? 'var(--color-dark)' : 'rgba(139, 115, 85, 0.2)',
-      borderRadius: 2,
-      background: active ? 'var(--color-dark)' : 'transparent',
-      color: active ? 'var(--color-bg)' : 'var(--color-text-secondary)',
-      cursor: 'pointer', letterSpacing: '0.03em', transition: 'all 0.2s',
-    }}>
-      {children}
-    </button>
-  )
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return ''
-  return new Date(dateStr).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })
 }

@@ -1,0 +1,153 @@
+:root {
+  --color-bg: #FCF9F4;
+  --color-text: #2C1810;
+  --color-text-secondary: #6B5744;
+  --color-text-muted: #8B7355;
+  --color-text-faint: #9B8B7A;
+  --color-accent: #C4956A;
+  --color-border: rgba(139, 115, 85, 0.12);
+  --color-border-light: rgba(139, 115, 85, 0.08);
+  --color-dark: #2C1810;
+  --color-dark-hover: #4A2E1E;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Source Serif 4', serif;
+  --font-sans: 'DM Sans', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+
+::selection {
+  background: rgba(196, 149, 106, 0.25);
+  color: var(--color-text);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb { background: rgba(139, 115, 85, 0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(139, 115, 85, 0.35); }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Article content styles */
+.article-content {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.85;
+  color: #4A3728;
+}
+
+.article-content p {
+  margin-bottom: 1.5em;
+}
+
+.article-content h2 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 2.5em 0 0.75em;
+  line-height: 1.3;
+}
+
+.article-content h3 {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 2em 0 0.6em;
+  line-height: 1.35;
+}
+
+.article-content blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding: 0.5em 0 0.5em 1.5em;
+  margin: 1.5em 0;
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.article-content figure {
+  margin: 2em 0;
+}
+
+.article-content figure img {
+  border-radius: 3px;
+  width: 100%;
+}
+
+.article-content figcaption {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--color-text-faint);
+  margin-top: 0.5em;
+  line-height: 1.5;
+}
+
+.article-content a {
+  color: #8B4513;
+  text-decoration: underline;
+  text-decoration-color: rgba(139, 69, 19, 0.3);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.2s;
+}
+
+.article-content a:hover {
+  text-decoration-color: #8B4513;
+}
+
+.article-content sup {
+  font-size: 0.7em;
+}
+
+/* Ghost gallery cards */
+.article-content .kg-gallery-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+.article-content .kg-gallery-row {
+  display: flex;
+  gap: 0.75em;
+}
+
+.article-content .kg-gallery-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 3px;
+}
