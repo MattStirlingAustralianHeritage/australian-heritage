@@ -122,6 +122,7 @@ export default function AdminDashboard({ onEdit, onNew, onLogout }) {
         </div>
         {tab === 'analytics' && <AnalyticsDashboard articles={articles} />}
         {tab === 'articles' && (
+          <div>
         {/* Title bar */}
         <div style={{
           display: 'flex',
