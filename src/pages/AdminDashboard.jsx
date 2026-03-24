@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import AnalyticsDashboard from './AnalyticsDashboard'
 
 export default function AdminDashboard({ onEdit, onNew, onLogout }) {
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
+  const [tab, setTab] = useState('articles')
 
   useEffect(() => {
     fetchArticles()
@@ -107,6 +109,13 @@ export default function AdminDashboard({ onEdit, onNew, onLogout }) {
       </header>
 
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '32px' }}>
+        <div style={{ display: 'flex', gap: 24, borderBottom: '1px solid rgba(139,115,85,0.2)', marginBottom: 32 }}>
+          {['articles', 'analytics'].map(t => (
+            <button key={t} onClick={() => setTab(t)} style={{ padding: '8px 0', border: 'none', background: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: "'DM Sans', sans-serif", color: tab === t ? '#2C1810' : '#8a7d6b', borderBottom: tab === t ? '2px solid #C4956A' : '2px solid transparent', marginBottom: -1, textTransform: 'capitalize' }}>{t}</button>
+          ))}
+        </div>
+        {tab === 'analytics' && <AnalyticsDashboard articles={articles} />}
+        {tab === 'articles' && <div>
         {/* Title bar */}
         <div style={{
           display: 'flex',
@@ -277,6 +286,7 @@ export default function AdminDashboard({ onEdit, onNew, onLogout }) {
           </div>
         )}
       </div>
+        </div>}
     </div>
   )
 }
