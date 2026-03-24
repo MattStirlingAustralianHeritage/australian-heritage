@@ -47,6 +47,7 @@ export default function AdminDashboard({ onEdit, onNew, onLogout }) {
     all: articles.length,
     published: articles.filter(a => a.status === 'published').length,
     draft: articles.filter(a => a.status === 'draft').length,
+    scheduled: articles.filter(a => a.status === 'scheduled').length,
   }
 
   return (
@@ -165,7 +166,7 @@ export default function AdminDashboard({ onEdit, onNew, onLogout }) {
           marginBottom: 24,
           borderBottom: '1px solid rgba(139, 115, 85, 0.12)',
         }}>
-          {['all', 'published', 'draft'].map(f => (
+          {['all', 'published', 'scheduled', 'draft'].map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
