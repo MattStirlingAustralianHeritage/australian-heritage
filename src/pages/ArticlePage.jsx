@@ -29,15 +29,6 @@ export default function ArticlePage() {
     fetchArticle()
   }, [slug])
 
-  useEffect(() => {
-    if (!article?.id) return
-    supabase.from('page_views').insert({
-      article_id: article.id,
-      referrer: document.referrer || null,
-      user_agent: navigator.userAgent || null,
-    }).then(() => {})
-  }, [article?.id])
-
   if (loading) return <Loading />
 
   if (!article) {
