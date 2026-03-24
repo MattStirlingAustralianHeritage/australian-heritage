@@ -7,6 +7,7 @@ import CategoryPage from './pages/CategoryPage'
 import DocumentariesPage from './pages/DocumentariesPage'
 import AboutPage from './pages/AboutPage'
 import AdminApp from './pages/AdminApp'
+import MapPage from './pages/MapPage'
 import AustraliaMap from './pages/AustraliaMap'
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
               <Route path="/category/:slug" element={<CategoryPage />} />
               <Route path="/documentaries" element={<DocumentariesPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/map" element={<MapPage />} />
             </Routes>
           </main>
           <Footer />
