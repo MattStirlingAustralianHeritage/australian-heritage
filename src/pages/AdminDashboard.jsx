@@ -115,7 +115,7 @@ export default function AdminDashboard({ onEdit, onNew, onLogout }) {
           ))}
         </div>
         {tab === 'analytics' && <AnalyticsDashboard articles={articles} />}
-        {tab === 'articles' && <div>
+        {tab === 'articles' && (
         {/* Title bar */}
         <div style={{
           display: 'flex',
@@ -284,7 +284,8 @@ export default function AdminDashboard({ onEdit, onNew, onLogout }) {
               </div>
             ))}
           </div>
-        </div>}
+        )}
+      </div>
         )}
     </div>
   )
