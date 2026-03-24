@@ -285,7 +285,6 @@ export default function AdminDashboard({ onEdit, onNew, onLogout }) {
             ))}
           </div>
         )}
-      </div>
         </div>}
     </div>
   )
