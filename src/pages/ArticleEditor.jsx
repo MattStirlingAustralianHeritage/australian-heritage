@@ -13,6 +13,7 @@ export default function ArticleEditor({ articleId, onBack }) {
     hero_image_url: '',
     hero_image_alt: '',
     status: 'draft',
+    scheduled_at: '',
     featured: false,
     category_id: null,
     meta_title: '',
@@ -58,6 +59,7 @@ export default function ArticleEditor({ articleId, onBack }) {
         hero_image_url: data.hero_image_url || '',
         hero_image_alt: data.hero_image_alt || '',
         status: data.status || 'draft',
+        scheduled_at: data.scheduled_at ? data.scheduled_at.slice(0, 16) : '',
         featured: data.featured || false,
         category_id: data.category_id || null,
         meta_title: data.meta_title || '',
@@ -100,8 +102,9 @@ export default function ArticleEditor({ articleId, onBack }) {
         : article.content,
       content_format: 'html',
       hero_image_url: article.hero_image_url || null,
+      scheduled_at: article.scheduled_at ? new Date(article.scheduled_at).toISOString() : null,
       hero_image_alt: article.hero_image_alt || null,
-      status: publishNow ? 'published' : article.status,
+      status: publishNow ? 'published' : (article.scheduled_at && !publishNow ? 'scheduled' : article.status),
       featured: article.featured,
       category_id: article.category_id || null,
       meta_title: article.meta_title || null,
@@ -264,6 +267,23 @@ export default function ArticleEditor({ articleId, onBack }) {
             >
               Publish
             </button>
+          )}
+          {article.status !== 'published' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <input
+                type="datetime-local"
+                value={article.scheduled_at}
+                onChange={e => setArticle(prev => ({ ...prev, scheduled_at: e.target.value }))}
+                style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, padding: '6px 10px', borderRadius: 3, border: '1px solid rgba(139,115,85,0.3)', background: '#faf8f4', color: '#3d2b1f', outline: 'none' }}
+              />
+              <button
+                onClick={() => { if (article.scheduled_at) handleSave(false) }}
+                disabled={saving || !article.scheduled_at}
+                style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600, color: '#2C1810', background: article.scheduled_at ? '#8b6d38' : '#ccc', border: 'none', padding: '7px 14px', borderRadius: 3, cursor: article.scheduled_at ? 'pointer' : 'default' }}
+              >
+                Schedule
+              </button>
+            </div>
           )}
           {article.status === 'published' && (
             <button
