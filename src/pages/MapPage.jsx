@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import mapboxgl from 'mapbox-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 
 const STATE_COLORS = {
@@ -106,7 +108,6 @@ export default function MapPage() {
   // Render markers when map is loaded and towns are available
   useEffect(() => {
     if (!mapLoaded || !mapRef.current || towns.length === 0) return
-    const mapboxgl = window.mapboxgl
     const map = mapRef.current
 
     // Clear existing markers
