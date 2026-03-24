@@ -85,6 +85,7 @@ export default function MapPage() {
       zoom: 3.8,
       minZoom: 2,
       maxZoom: 14,
+      projection: 'mercator',
     })
 
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right')
