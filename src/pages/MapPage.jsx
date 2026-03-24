@@ -74,18 +74,16 @@ export default function MapPage() {
     if (!mapContainer.current) return
     if (mapRef.current) return
 
-    const script = document.createElement('script')
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/2.15.0/mapbox-gl.min.js'
-    script.onload = () => {
+    const token = import.meta.env.VITE_MAPBOX_TOKEN
+
+    const initMap = () => {
+      const mb = window.mapboxgl
+      mb.accessToken = token
       const link = document.createElement('link')
       link.rel = 'stylesheet'
       link.href = 'https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/2.15.0/mapbox-gl.min.css'
       document.head.appendChild(link)
-
-      const mapboxgl = window.mapboxgl
-      mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
-
-      const map = new mapboxgl.Map({
+      const map = new mb.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11',
         center: [134.0, -27.0],
@@ -93,15 +91,22 @@ export default function MapPage() {
         minZoom: 2,
         maxZoom: 14,
       })
-
-      map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right')
-
+      map.addControl(new mb.NavigationControl({ showCompass: false }), 'bottom-right')
       map.on('load', () => {
         mapRef.current = map
         setMapLoaded(true)
       })
     }
-    document.head.appendChild(script)
+
+    if (window.mapboxgl) {
+      initMap()
+    } else {
+      const script = document.createElement('script')
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/2.15.0/mapbox-gl.min.js'
+      script.async = true
+      script.onload = initMap
+      document.head.appendChild(script)
+    }
 
     return () => {
       if (mapRef.current) {
