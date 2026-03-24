@@ -6,6 +6,9 @@ export default function ArticleEditor({ articleId, onBack }) {
     title: '',
     slug: '',
     excerpt: '',
+    period: '',
+    location: '',
+    tags: '',
     content: '',
     hero_image_url: '',
     hero_image_alt: '',
@@ -48,6 +51,9 @@ export default function ArticleEditor({ articleId, onBack }) {
         title: data.title || '',
         slug: data.slug || '',
         excerpt: data.excerpt || '',
+        period: data.period || '',
+        location: data.location || '',
+        tags: Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags || ''),
         content: data.content || '',
         hero_image_url: data.hero_image_url || '',
         hero_image_alt: data.hero_image_alt || '',
@@ -86,6 +92,9 @@ export default function ArticleEditor({ articleId, onBack }) {
       title: article.title,
       slug: article.slug,
       excerpt: article.excerpt,
+      period: article.period || null,
+      location: article.location || null,
+      tags: article.tags ? article.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
       content: editorMode === 'visual' && contentRef.current
         ? contentRef.current.innerHTML
         : article.content,
@@ -354,6 +363,28 @@ export default function ArticleEditor({ articleId, onBack }) {
               boxSizing: 'border-box',
             }}
           />
+
+          {/* Period & Location */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+            <select value={article.period} onChange={e => setArticle(prev => ({ ...prev, period: e.target.value }))}
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid rgba(139,115,85,0.2)', borderRadius: 4, fontSize: 14, color: '#3d2b1f', background: '#faf8f4', outline: 'none' }}>
+              <option value="">Historical period...</option>
+              <option>Pre-contact</option>
+              <option>Colonial (1788–1850)</option>
+              <option>Gold Rush (1851–1880)</option>
+              <option>Federation Era (1880–1914)</option>
+              <option>WWI &amp; Interwar</option>
+              <option>WWII</option>
+              <option>Post-war (1945–1975)</option>
+              <option>Modern (1975–present)</option>
+            </select>
+            <input value={article.location} onChange={e => setArticle(prev => ({ ...prev, location: e.target.value }))}
+              placeholder="Location (e.g. Queenscliff, Victoria)"
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid rgba(139,115,85,0.2)', borderRadius: 4, fontSize: 14, color: '#3d2b1f', background: '#faf8f4', outline: 'none', boxSizing: 'border-box' }} />
+          </div>
+          <input value={article.tags} onChange={e => setArticle(prev => ({ ...prev, tags: e.target.value }))}
+            placeholder="Tags (comma-separated: pilots, Port Phillip, shipwrecks)"
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid rgba(139,115,85,0.2)', borderRadius: 4, fontSize: 14, color: '#3d2b1f', background: '#faf8f4', outline: 'none', boxSizing: 'border-box', marginBottom: 24 }} />
 
           {/* Editor toolbar */}
           <div style={{
